@@ -14,9 +14,9 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <img id="college-logo" src="{{ url_for('static', filename='logo.png') }}" alt="College Logo"
+                <img id="college-logo" src="https://cdn.universitykart.com//Content/upload/admin/trt2aqs3.yrx.png" alt="College Logo"
                     onclick="changeLogo()">
-                <h1>Admin Portal</h1>
+                <h1>Arcade Order Management System</h1>
             </div>
             <div class="user-profile">
                 <div class="notifications">
@@ -37,10 +37,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="profile-image" onclick="changeProfilePicture()">
-                    <img id="profile-pic" src="{{ url_for('static', filename='profile.jpg') }}" alt="Profile">
-                </div>
-                <button onclick="signOut()">Sign Out</button>
             </div>
         </header>
 
@@ -51,9 +47,8 @@
                 <nav>
                     <ul>
                         <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a></li>
-                        <li><a href="#"><i class="fas fa-box"></i> Stationery Orders</a></li>
-                        <li><a href="#"><i class="fas fa-copy"></i> Xerox Orders</a></li>
-                        <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="{{ url_for('manage_stock') }}"><i class="fas fa-box"></i>Manage Stock</a>
+                        </li>
                     </ul>
                 </nav>
             </div>

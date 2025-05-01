@@ -5,6 +5,8 @@ from werkzeug.utils import secure_filename
 import firebase_admin
 from firebase_admin import credentials, firestore, storage
 import re
+from datetime import datetime
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -44,6 +46,146 @@ def allowed_file(filename):
 def index():
     # Directly render the homepage without authentication
     return render_template('index.html')
+
+
+@app.route('/manage_stock', endpoint='manage_stock')
+def manage_stock():
+    return render_template('manage_stock.html')
+
+
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    try:
+        required_fields = ['cover-image', 'product-name',
+                           'product-price', 'is-in-stock', 'product-category']
+        missing_fields = [field for field in required_fields if (
+            field not in request.form and field not in request.files)]
+        if missing_fields:
+            error_msg = f"Missing required fields: {', '.join(missing_fields)}"
+            print(error_msg)
+            return jsonify({'error': error_msg}), 400
+
+        product_name = request.form.get('product-name', '').strip()
+        product_category = request.form.get('product-category', '').strip()
+        product_price_str = request.form.get('product-price', '')
+        is_in_stock = request.form.get('is-in-stock', '').lower() == 'true'
+        file = request.files.get('cover-image')
+
+        if not product_name:
+            error_msg = "Product name cannot be empty"
+            print(error_msg)
+            return jsonify({'error': error_msg}), 400
+
+        if not product_category:
+            error_msg = "Product category cannot be empty"
+            print(error_msg)
+            return jsonify({'error': error_msg}), 400
+
+        try:
+            product_price = float(product_price_str)
+            if product_price < 0:
+                error_msg = "Product price cannot be negative"
+                print(error_msg)
+                return jsonify({'error': error_msg}), 400
+        except (ValueError, TypeError):
+            error_msg = "Invalid product price"
+            print(error_msg)
+            return jsonify({'error': error_msg}), 400
+
+        if not file or file.filename == '':
+            error_msg = "No selected file for cover image"
+            print(error_msg)
+            return jsonify({'error': error_msg}), 400
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            temp_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(temp_path)
+
+            storage_path = f"stationery_images/{filename}"
+            blob = bucket.blob(storage_path)
+            blob.upload_from_filename(temp_path)
+            blob.make_public()
+            cover_image_url = blob.public_url
+
+            os.remove(temp_path)
+
+            product_data = {
+                'name': product_name,
+                'category': product_category,
+                'price': product_price,
+                'isInStock': is_in_stock,
+                'imageUrl': cover_image_url,
+                'createdAt': datetime.utcnow()
+            }
+            db.collection('stationery_products').add(product_data)
+
+            return jsonify({'message': 'Product added successfully'}), 200
+        else:
+            error_msg = "Invalid file type. Allowed types: png, jpg, jpeg, gif"
+            print(error_msg)
+            return jsonify({'error': error_msg}), 400
+    except Exception as e:
+        error_msg = f"Unexpected error adding product: {str(e)}"
+        print(error_msg)
+        return jsonify({'error': error_msg}), 500
+
+
+@app.route('/fetch_stationery_items', methods=['GET'])
+def fetch_stationery_items():
+    try:
+        items = db.collection('stationery_products').get()
+        items_list = []
+        for item in items:
+            item_dict = item.to_dict()
+            item_dict['id'] = item.id
+            items_list.append(item_dict)
+        return jsonify(items_list), 200
+    except Exception as e:
+        print(f"Error fetching stationery items: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/update_stock_status', methods=['POST'])
+def update_stock_status():
+    try:
+        data = request.get_json()
+        item_id = data.get('item_id')
+        is_in_stock = data.get('isInStock')
+
+        if not item_id or is_in_stock is None:
+            return jsonify({'error': 'Missing item_id or isInStock value'}), 400
+
+        db.collection('stationery_products').document(item_id).update({
+            'isInStock': is_in_stock
+        })
+        return jsonify({'message': 'Stock status updated successfully'}), 200
+    except Exception as e:
+        print(f"Error updating stock status: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/delete_stationery_item', methods=['POST'])
+def delete_stationery_item():
+    try:
+        data = request.get_json()
+        item_id = data.get('item_id')
+        image_url = data.get('imageUrl')
+
+        if not item_id or not image_url:
+            return jsonify({'error': 'Missing item_id or imageUrl'}), 400
+
+        db.collection('stationery_products').document(item_id).delete()
+
+        parsed_url = urlparse(image_url)
+        path = parsed_url.path.lstrip('/')
+        blob = bucket.blob(path)
+        blob.delete()
+
+        return jsonify({'message': 'Stationery item deleted successfully'}), 200
+    except Exception as e:
+        print(f"Error deleting stationery item: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/fetch_arcade_orders')

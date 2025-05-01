@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stationery Shop Admin Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <img id="college-logo" src="{{ url_for('static', filename='logo.png') }}" alt="College Logo"
+                    onclick="changeLogo()">
+                <h1>Admin Portal</h1>
+            </div>
+            <div class="user-profile">
+                <div class="notifications">
+                    <i id="notification-icon" class="fas fa-bell" onclick="toggleNotifications()"></i>
+                    <span class="notification-badge">3</span>
+                    <div class="notification-dropdown">
+                        <div class="notification-item">
+                            <p>New xerox order received</p>
+                            <span>5 minutes ago</span>
+                        </div>
+                        <div class="notification-item">
+                            <p>Order #888 is ready for pickup</p>
+                            <span>20 minutes ago</span>
+                        </div>
+                        <div class="notification-item">
+                            <p>New stationery items added to inventory</p>
+                            <span>1 hour ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-image" onclick="changeProfilePicture()">
+                    <img id="profile-pic" src="{{ url_for('static', filename='profile.jpg') }}" alt="Profile">
+                </div>
+                <button onclick="signOut()">Sign Out</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <nav>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-box"></i> Stationery Orders</a></li>
+                        <li><a href="#"><i class="fas fa-copy"></i> Xerox Orders</a></li>
+                        <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                <div class="orders-container">
+                    <div class="orders-section">
+                        <h2>Xerox Orders</h2>
+                        <div class="order-cards" id="xerox-orders">
+                            <!-- Orders will be dynamically populated here -->
+                        </div>
+                    </div>
+
+                    <div class="orders-section" id="stationery-orders">
+                        <h2>Stationery Orders</h2>
+                        <div class="pin-input-container">
+                            <input type="text" id="pin-input" placeholder="Enter 3-digit PIN" maxlength="3"
+                                pattern="\d{3}">
+                            <button onclick="fetchOrderByPin()">Search</button>
+                        </div>
+                        <div class="order-cards" id="stationery-order-details">
+                            <!-- Order details will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File input for profile picture upload (hidden) -->
+    <input type="file" id="profile-upload" accept="image/*" style="display: none;">
+
+    <!-- File input for logo upload (hidden) -->
+    <input type="file" id="logo-upload" accept="image/*" style="display: none;">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

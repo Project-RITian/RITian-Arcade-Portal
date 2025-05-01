@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Stationery Shop Admin Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Admin Login</h2>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button onclick="signIn()">Login</button>
+            <p id="error-message" style="color: red; display: none;"></p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK as ES Modules -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0BCnbbd9fNJIO_AyTpxrtSUtKk1r61qE",
+            authDomain: "ritian.firebaseapp.com",
+            projectId: "ritian",
+            storageBucket: "ritian.firebasestorage.app",
+            messagingSenderId: "311846400263",
+            appId: "1:311846400263:web:cd61d6aacb13fb5e38d5a2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        window.auth = getAuth(app);
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword; // Make signInWithEmailAndPassword globally available
+    </script>
+    <script src="{{ url_for('static', filename='login.js') }}"></script>
+</body>
+
+</html>

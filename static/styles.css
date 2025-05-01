@@ -386,6 +386,151 @@ body {
     background-color: #218838;
 }
 
+/* Existing styles assumed to be present, no changes needed */
+
+/* Form Container */
+.product-form-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="file"],
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-group input[type="file"] {
+    padding: 3px;
+}
+
+/* Submit Button */
+.product-form-container button {
+    background: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.product-form-container button:hover {
+    background: #45a049;
+}
+
+/* Form Message */
+#form-message .success {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+#form-message .error {
+    color: #f44336;
+    font-weight: bold;
+}
+
+/* Stationery Items Container */
+.stationery-items-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Stationery Card */
+.stationery-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    padding: 15px;
+    text-align: center;
+}
+
+.stationery-image {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.stationery-card h3 {
+    font-size: 1.2em;
+    margin: 10px 0 5px;
+}
+
+.stationery-card p {
+    margin: 5px 0;
+    color: #666;
+}
+
+/* Stock Button */
+.stock-button {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.stock-button.out-of-stock {
+    background: #f44336;
+    color: white;
+}
+
+.stock-button.out-of-stock:hover {
+    background: #d32f2f;
+}
+
+.stock-button.in-stock {
+    background: #4CAF50;
+    color: white;
+}
+
+.stock-button.in-stock:hover {
+    background: #45a049;
+}
+
+/* Delete Button */
+.delete-button {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.delete-button:hover {
+    background: #d32f2f;
+}
+
 @media (max-width: 768px) {
     .main-content {
         flex-direction: column;
